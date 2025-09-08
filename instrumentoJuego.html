@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juego de Instrumentos</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+  #instrumento-juego { text-align: center; padding: 50px 20px; max-width: 600px; margin: auto; }
+  #turno { font-weight: bold; margin-bottom: 20px; }
+  #mensaje { margin-top: 20px; font-weight: bold; }
+  .opcion-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    padding: 10px;
+    background: #ff7f50;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 120px;
+    height: 120px;
+    text-align: center;
+  }
+  .opcion-btn img { width: 50px; height: 50px; margin-bottom: 5px; }
+  .opcion-btn:hover { background: #ff4f20; }
+  #playSound { margin-bottom: 20px; padding: 10px 20px; font-size: 1rem; }
+  #siguiente { margin-top: 20px; padding: 10px 20px; font-size: 1rem; display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Didactica musical 2.0 | Juego de Instrumentos</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="juegos.html">Juegos</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<section id="instrumento-juego">
+  <h2>Adivina el instrumento 🎵</h2>
+  <p id="turno">Turno 1 / 10</p>
+  <button id="playSound">🎧 Escuchar instrumento</button>
+  <div id="opciones"></div>
+  <p id="mensaje"></p>
+  <button id="siguiente">Siguiente</button>
+</section>
+</main>
+
+<script>
+const instrumentos = [
+  {nombre: "Piano", sonido: "sounds/piano.mp3", imagen: "images/piano.jpg"},
+  {nombre: "Guitarra", sonido: "sounds/guitarra.mp3", imagen: "images/guitarra.jpg"},
+  {nombre: "Batería", sonido: "sounds/bateria.mp3", imagen: "images/bateria.jpg"},
+  {nombre: "Flauta", sonido: "sounds/flauta.mp3", imagen: "images/flauta.jpg"},
+  {nombre: "Violín", sonido: "sounds/violin.mp3", imagen: "images/violin.jpg"},
+  {nombre: "Trompeta", sonido: "sounds/trompeta.mp3", imagen: "images/trompeta.jpg"},
+  {nombre: "Saxofón", sonido: "sounds/saxo.mp3", imagen: "images/saxo.jpg"},
+  {nombre: "Acordeon", sonido: "sounds/acordeon.mp3", imagen: "images/acordeon.jpg"},
+  {nombre: "Arpa", sonido: "sounds/arpa.mp3", imagen: "images/arpa.jpg"},
+  {nombre: "Clarinete", sonido: "sounds/clarinete.mp3", imagen: "images/clarinete.jpg"},
+];
+
+let turnoActual = 0;
+let turnoMax = 10;
+let puntaje = 0;
+let instrumentosTurno = [...instrumentos];
+shuffle(instrumentosTurno);
+
+let audio = null;
+let respuestaDada = false;
+
+const turnoText = document.getElementById('turno');
+const opcionesDiv = document.getElementById('opciones');
+const mensaje = document.getElementById('mensaje');
+const playSoundBtn = document.getElementById('playSound');
+const siguienteBtn = document.getElementById('siguiente');
+
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [array[i],array[j]] = [array[j],array[i]];
+  }
+}
+
+function crearOpciones(correcto){
+  let opciones = [correcto];
+  let distractores = instrumentos.filter(i=>i.nombre !== correcto.nombre);
+  shuffle(distractores);
+  opciones.push(distractores[0], distractores[1]);
+  shuffle(opciones);
+  return opciones;
+}
+
+function mostrarTurno(){
+  if(turnoActual>=turnoMax){
+    turnoText.textContent = `Juego terminado! Puntaje: ${puntaje} / ${turnoMax}`;
+    opcionesDiv.innerHTML='';
+    playSoundBtn.disabled = true;
+    siguienteBtn.style.display = 'none';
+    return;
+  }
+
+  respuestaDada = false;
+  siguienteBtn.style.display = 'none';
+
+  const instrumento = instrumentosTurno[turnoActual];
+  turnoText.textContent = `Turno ${turnoActual + 1} / ${turnoMax}`;
+  mensaje.textContent='';
+
+  // Crear Audio
+  if(audio) audio.pause();
+  audio = new Audio(instrumento.sonido);
+  audio.onended = ()=> playSoundBtn.textContent = "🎧 Escuchar instrumento";
+  playSoundBtn.textContent = "🎧 Escuchar instrumento";
+
+  playSoundBtn.onclick = ()=>{
+    if(audio.paused){
+      audio.play();
+      playSoundBtn.textContent = "⏸ Pausar";
+    } else {
+      audio.pause();
+      playSoundBtn.textContent = "🎧 Escuchar instrumento";
+    }
+  }
+
+  // Opciones con imágenes
+  const opciones = crearOpciones(instrumento);
+  opcionesDiv.innerHTML='';
+  opciones.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.classList.add('opcion-btn');
+    btn.innerHTML = `<img src="${op.imagen}" alt="${op.nombre}"><span>${op.nombre}</span>`;
+    btn.addEventListener('click', ()=>{
+      if(!respuestaDada){
+        respuestaDada = true;
+        if(op.nombre===instrumento.nombre){
+          mensaje.textContent='✅ Correcto!';
+          btn.style.background='green';
+          puntaje++;
+        } else {
+          mensaje.textContent=`❌ Incorrecto! Era ${instrumento.nombre}`;
+          btn.style.background='red';
+          // Resaltar correcto
+          const botones = opcionesDiv.querySelectorAll('.opcion-btn');
+          botones.forEach(b=>{
+            if(b.querySelector('span').textContent===instrumento.nombre){
+              b.style.background='green';
+            }
+          });
+        }
+        siguienteBtn.style.display = 'inline-block';
+      }
+    });
+    opcionesDiv.appendChild(btn);
+  });
+}
+
+// Botón siguiente
+siguienteBtn.onclick = ()=>{
+  turnoActual++;
+  mostrarTurno();
+}
+
+// Inicia el primer turno
+mostrarTurno();
+</script>
+</body>
+</html>

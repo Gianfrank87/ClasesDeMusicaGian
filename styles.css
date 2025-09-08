@@ -104,7 +104,7 @@ nav a:hover::after {
   color: white;
 }
 
-/* ===== CARDS ===== */
+/* ===== CARDS INDEX ===== */
 #tres-cajas, #dos-cajas {
   display: grid;
   gap: 1.5rem;
@@ -144,58 +144,108 @@ nav a:hover::after {
   min-height: 200px;
 }
 
-/* ===== FOOTER ===== */
-footer {
+.card .card-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.7rem 1.2rem;
+  background: linear-gradient(90deg, #ff0000, #ff7a00);
+  color: white;
+  font-weight: bold;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.card .card-btn:hover {
   background: #222;
-  color: #ddd;
+  color: white;
+}
+
+/* ===== SECCIÓN JUEGOS ===== */
+/* ===== SECCIÓN JUEGOS ===== */
+#juegos {
+  padding: 50px 20px;
+  background: #fef6e4;
   text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
 }
 
-/* ===== RESPONSIVE ===== */
-
-/* Tablets */
-@media (max-width: 992px) {
-  #tres-cajas {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  #dos-cajas {
-    grid-template-columns: 1fr;
-  }
+#juegos h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
 }
 
-/* Celulares */
+.juegos-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+#juegos .juego-card {
+  background: #fff;
+  padding: 25px 20px;
+  width: 220px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* asegura que el botón quede al final */
+  min-height: 320px; /* iguala altura de todas las cards */
+}
+
+#juegos .juego-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 25px rgba(0,0,0,0.25);
+}
+
+#juegos .juego-card i {
+  font-size: 2.5rem;
+  color: #ff7f50;
+  margin-bottom: 15px;
+}
+
+#juegos .juego-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+#juegos .juego-card p {
+  font-size: 0.95rem;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+#juegos .juego-btn {
+  display: inline-block;
+  margin-top: auto; /* asegura que el botón se quede abajo */
+  padding: 8px 18px;
+  background: #ff7f50;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+#juegos .juego-btn:hover {
+  background: #ff4f20;
+}
+
+/* ===== OPCIONES DEL JUEGO ===== */
+#opciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
 @media (max-width: 600px) {
-  nav ul {
+  #opciones {
     flex-direction: column;
-    gap: 1rem;
+    align-items: center;
   }
-
-  #tres-cajas {
-    grid-template-columns: 1fr;
-  }
-
-  #hero {
-    padding: 2rem 1rem;
-  }
-
-  .hero-links a {
-    display: block;
-    margin: 0.5rem auto;
-    width: 80%;
-  }
-}
-
-/* Animaciones de entrada */
-#hero, .card {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
-}
-
-#hero.visible, .card.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
